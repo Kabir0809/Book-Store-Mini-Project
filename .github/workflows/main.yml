@@ -31,13 +31,13 @@ jobs:
 
       - name: Install Frontend dependencies
         run: |
-          cd client  # Navigate to the client directory
+          cd frontend  # Navigate to the frontend directory
           npm install  # Install frontend dependencies
 
       - name: Build Frontend
         run: |
-          cd client  # Ensure this is the correct path to the client
-          npm run build  # Build the React app
+          cd frontend  # Ensure this is the correct path to the frontend
+          npm run build  # Build the frontend application
 
       - name: Test Backend
         run: |
