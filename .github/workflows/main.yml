@@ -1,0 +1,54 @@
+name: Deploy Book Store Mini Project
+
+on:
+  push:
+    branches:
+      - main  # Runs the workflow on pushes to the main branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest  # Use GitHub's cloud runner on Ubuntu
+
+    services:
+      mongodb:  # Set up a MongoDB service for testing (if required)
+        image: mongo:latest
+        ports:
+          - 27017:27017
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Adjust Node.js version as needed
+
+      - name: Install Backend dependencies
+        run: |
+          cd backend  # Navigate to the backend directory
+          npm install  # Install backend dependencies
+
+      - name: Install Frontend dependencies
+        run: |
+          cd client  # Navigate to the client directory
+          npm install  # Install frontend dependencies
+
+      - name: Build Frontend
+        run: |
+          cd client  # Ensure this is the correct path to the client
+          npm run build  # Build the React app
+
+      - name: Test Backend
+        run: |
+          cd backend  # Navigate to the backend directory
+          npm test  # Run tests defined in the backend package.json
+
+      - name: Set environment variables
+        run: |
+          echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> $GITHUB_ENV
+
+      - name: Deploy Backend
+        run: |
+          cd backend  # Navigate to the backend directory
+          npm start  # Start the backend server
